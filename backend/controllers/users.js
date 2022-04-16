@@ -7,9 +7,10 @@ const { NotFoundError } = require('../middlewares/notFoundError');
 
 const createUser = async (req, res, next) => {
   try {
+    const hash = await bcrypt.hash(req.body.password, 10);
     const user = await User.create({
       email: req.body.email,
-      password: bcrypt.hash(req.body.password, 10),
+      password: hash,
     });
     res.status(201).send(user);
   } catch (error) {
@@ -25,13 +26,29 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
-    if (!user || !bcrypt.compare(password, user.password)) {
+    const passwordCheck = await bcrypt.compare(password, user.password);
+    if (!user || !passwordCheck) {
       throw new UnauthorizedError('Wrong email or password');
     } else {
       const token = jwt.sign({ _id: user._id }, 'not-very-secret-key', { expiresIn: '7d' });
-      res.send(token);
+      res.status(200).send({ token });
     }
   } catch (error) {
+    next(error);
+  }
+};
+
+const getCurrentUser = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.replace('Bearer ', '');
+    const payload = await jwt.verify(token, 'not-very-secret-key');
+    const user = await User.findById(payload._id);
+    res.status(200).send(user);
+  } catch (error) {
+    if (error.name === 'CastError') {
+      error.status = 400;
+      error.message = 'Invalid user ID passed to the server';
+    }
     next(error);
   }
 };
@@ -47,27 +64,14 @@ const getUsers = async (req, res, next) => {
   }
 };
 
-const getCurrentUser = async (req, res, next) => {
-  try {
-    const token = req.headers.authorization;
-    const payload = jwt.verify(token, 'not-very-secret-key');
-    const user = await User.findById(payload._id);
-    res.send(user);
-  } catch (error) {
-    if (error.name === 'CastError') {
-      error.status = 400;
-      error.message = 'Invalid user ID passed to the server';
-    }
-    next(error);
-  }
-};
-
 const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
       throw new NotFoundError('User ID not found');
-    } else { res.send(user); }
+    } else {
+      res.send(user);
+    }
   } catch (error) {
     if (error.name === 'CastError') {
       error.status = 400;
@@ -89,7 +93,9 @@ const updateProfile = async (req, res, next) => {
     );
     if (!user) {
       throw new NotFoundError('User ID not found');
-    } else { res.send(user); }
+    } else {
+      res.send(user);
+    }
   } catch (error) {
     if (error.name === 'CastError') {
       error.status = 400;
@@ -108,7 +114,9 @@ const updateAvatar = async (req, res, next) => {
     );
     if (!user) {
       throw new NotFoundError('User ID not found');
-    } else { res.send(user); }
+    } else {
+      res.send(user);
+    }
   } catch (error) {
     if (error.name === 'CastError') {
       error.status = 400;

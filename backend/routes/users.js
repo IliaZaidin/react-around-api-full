@@ -51,7 +51,7 @@ userRouter.patch(
   celebrate({
     headers: Joi.object().keys({}).unknown(true),
     body: Joi.object().keys({
-      link: Joi.string().required().custom(validateURL),
+      avatar: Joi.string().required().custom(validateURL),
     }),
   }),
   updateAvatar,

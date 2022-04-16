@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -21,27 +22,41 @@ app.use(helmet());
 
 app.use(requestLogger);
 
-app.post('/login', login);
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().custom(validateURL),
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
+app.use(cors());
+app.options('*', cors());
+
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    }),
   }),
-}), createUser);
+  login,
+);
+
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().custom(validateURL),
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    }),
+  }),
+  createUser,
+);
 
 app.use('/', authorize, indexRouter);
-
 app.get('*', (req, res) => {
   res.status(ERROR_NOT_FOUND).send({ message: 'Requested resource not found' });
 });
 
 app.use(errorLogger);
-
 app.use(errors());
-
 app.use((err, req, res, next) => {
   if (!res.statusCode || !res.message) {
     res.status(500).send({ message: 'An error has occurred on the server' });

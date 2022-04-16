@@ -39,7 +39,7 @@ cardRouter.post(
 );
 
 cardRouter.put(
-  '/:cardId/likes',
+  '/likes/:cardId',
   celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().alphanum(),
@@ -50,7 +50,7 @@ cardRouter.put(
 );
 
 cardRouter.delete(
-  '/:cardId/likes',
+  '/likes/:cardId',
   celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().alphanum(),

@@ -19,11 +19,11 @@ const deleteCard = async (req, res, next) => {
     const card = await Card.findById(req.params.cardId);
     if (!card) {
       throw new NotFoundError('Card ID not found');
-    } else if (req.user._id !== card.owner) {
+    } else if (req.user._id !== card.owner.toString()) {
       throw new Unauthorized('Authorization required');
     } else {
-      Card.deleteMany(card);
-      res.send(card);
+      await Card.findByIdAndRemove(card._id.toString());
+      res.status(200).send(card);
     }
   } catch (error) {
     next(error);
@@ -49,7 +49,9 @@ const likeCard = async (req, res, next) => {
     );
     if (!card) {
       throw new NotFoundError('Card ID not found');
-    } else { res.send(card); }
+    } else {
+      res.status(200).send(card);
+    }
   } catch (error) {
     next(error);
   }
@@ -64,7 +66,9 @@ const unlikeCard = async (req, res, next) => {
     );
     if (!card) {
       throw new NotFoundError('Card ID not found');
-    } else { res.send(card); }
+    } else {
+      res.send(card);
+    }
   } catch (error) {
     next(error);
   }

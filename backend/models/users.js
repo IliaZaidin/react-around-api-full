@@ -36,13 +36,12 @@ const userSchema = new mongoose.Schema(
         },
         message: 'Not a valid email',
       },
-      password: {
-        type: String,
-        required: true,
-        select: false,
-      },
     },
-
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
   },
   {
     versionKey: false,
