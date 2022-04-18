@@ -1,0 +1,21 @@
+.menu {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 24px;
+}
+
+@media screen and (max-width: 879px) {
+  .menu {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid #545454;
+  }
+}
+
+.menu_is_opened {
+  display: flex;
+}
