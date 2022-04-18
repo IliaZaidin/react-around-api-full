@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
@@ -30,7 +31,7 @@ const login = async (req, res, next) => {
     if (!user || !passwordCheck) {
       throw new UnauthorizedError('Wrong email or password');
     } else {
-      const token = jwt.sign({ _id: user._id }, 'not-very-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
       res.status(200).send({ token });
     }
   } catch (error) {
@@ -41,7 +42,7 @@ const login = async (req, res, next) => {
 const getCurrentUser = async (req, res, next) => {
   try {
     const token = req.headers.authorization.replace('Bearer ', '');
-    const payload = await jwt.verify(token, 'not-very-secret-key');
+    const payload = await jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
     const user = await User.findById(payload._id);
     res.status(200).send(user);
   } catch (error) {

@@ -12,6 +12,8 @@ const { createUser, login } = require('./controllers/users');
 const { authorize } = require('./middlewares/auth');
 const validateURL = require('./utils/validateURL');
 
+require('dotenv').config();
+
 const { PORT = 3000 } = process.env;
 const app = express();
 
@@ -24,6 +26,12 @@ app.use(requestLogger);
 
 app.use(cors());
 app.options('*', cors());
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
+});
 
 app.post(
   '/signin',
