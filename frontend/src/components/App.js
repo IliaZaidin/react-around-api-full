@@ -60,7 +60,7 @@ export default function App() {
         console.log("Error: ", err.status, err.statusText);
       });
 
-  }, [history])
+  }, [isLoggedIn])
 
 
 useEffect(() => {
