@@ -7,7 +7,8 @@ const { celebrate, Joi, errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const indexRouter = require('./routes/index');
-const { ERROR_NOT_FOUND, DB_ADDRESS } = require('./utils/consts');
+const { DB_ADDRESS } = require('./utils/consts');
+const { NotFoundError } = require('./middlewares/notFoundError');
 const { createUser, login } = require('./controllers/users');
 const { authorize } = require('./middlewares/auth');
 const validateURL = require('./utils/validateURL');
@@ -59,8 +60,8 @@ app.post(
 );
 
 app.use('/', authorize, indexRouter);
-app.get('*', (req, res) => {
-  res.status(ERROR_NOT_FOUND).send({ message: 'Requested resource not found' });
+app.get('*', () => {
+  throw new NotFoundError('Requested resource not found');
 });
 
 app.use(errorLogger);

@@ -19,7 +19,7 @@ cardRouter.delete(
   '/:cardId',
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().alphanum(),
+      cardId: Joi.string().alphanum().hex().length(24),
     }),
     headers: Joi.object().keys({}).unknown(true),
   }),
@@ -42,7 +42,7 @@ cardRouter.put(
   '/likes/:cardId',
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().alphanum(),
+      cardId: Joi.string().alphanum().hex().length(24),
     }),
     headers: Joi.object().keys({}).unknown(true),
   }),
@@ -53,7 +53,7 @@ cardRouter.delete(
   '/likes/:cardId',
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().alphanum(),
+      cardId: Joi.string().alphanum().hex().length(24),
     }),
     headers: Joi.object().keys({}).unknown(true),
   }),

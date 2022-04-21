@@ -6,6 +6,7 @@ const User = require('../models/users');
 const { UnauthorizedError } = require('../middlewares/unauthorizedError');
 const { NotFoundError } = require('../middlewares/notFoundError');
 
+// sorry I don't see a problem with those two
 const createUser = async (req, res, next) => {
   try {
     const hash = await bcrypt.hash(req.body.password, 10);
