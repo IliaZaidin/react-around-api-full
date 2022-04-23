@@ -112,7 +112,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "https://api.ilia.students.nomoreparties.sbs"
+  baseUrl: "https://api.ilia-project15.students.nomoreparties.sbs"
   // baseUrl: "http://localhost:3000"
 });
 
