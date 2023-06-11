@@ -46,7 +46,7 @@ class Auth {
 }
 
 const auth = new Auth({
-  baseUrl: "https://api.ilia-project15.students.nomoreparties.sbs"
+  baseUrl: "https://api.around.zaidin.online"
   // baseUrl: "http://localhost:3000"
 });
 
